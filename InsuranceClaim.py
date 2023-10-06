@@ -6,6 +6,8 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import confusion_matrix
 from keras.models import Sequential
 from keras.layers import Dense
+from keras.wrappers.scikit_learn import KerasClassifier
+from sklearn.model_selection import cross_val_scorefrom 
 
 df = pd.read_csv('Datasets/claims/insurance_claims.csv')
 
@@ -41,3 +43,41 @@ y_pred = (y_pred > 0.5)
 
 
 cm = confusion_matrix(y_test, y_pred)
+
+new_pred = classifier.predict(sc.transform(np.array([[a,b,c,d]])))
+new_pred = (new_prediction > 0.5)
+
+def make_classifier():
+    classifier = Sequential()
+    classiifier.add(Dense(3, kernel_initializer = ‘uniform’, activation = ‘relu’, input_dim=5))
+    classiifier.add(Dense(3, kernel_initializer = ‘uniform’, activation = ‘relu’))
+    classifier.add(Dense(1, kernel_initializer = ‘uniform’, activation = ‘sigmoid’))
+    classifier.compile(optimizer= ‘adam’,loss = ‘binary_crossentropy’,metrics = [‘accuracy’])
+    return classifier
+
+classiifier = KerasClassifier(build_fn = make_classifier,
+                            batch_size=10, nb_epoch=100)
+
+accuracies = cross_val_score(estimator = classifier,
+                             X = X_train,
+                             y = y_train,
+                             cv = 10,
+                             n_jobs = -1)
+
+mean = accuracies.mean()
+variance = accuracies.var()
+
+from keras.layers import Dropout
+
+classifier = Sequential()
+classiifier.add(Dense(3, kernel_initializer = ‘uniform’, activation = ‘relu’, input_dim=5))
+
+# Notice the dropouts
+classifier.add(Dropout(rate = 0.1))
+classiifier.add(Dense(6, kernel_initializer = ‘uniform’, activation = ‘relu’))
+classifier.add(Dropout(rate = 0.1))
+
+classifier.add(Dense(1, kernel_initializer = ‘uniform’, activation = ‘sigmoid’))
+classifier.compile(optimizer= ‘adam’,loss = ‘binary_crossentropy’,metrics = [‘accuracy’])
+
+
